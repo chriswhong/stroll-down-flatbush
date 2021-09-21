@@ -36,3 +36,21 @@
     transform: rotate(360deg);
   }
 }
+
+html,
+body,
+#root,
+.App,
+.App > div,
+.App > div> div,
+.react-slideshow-container,
+.react-slideshow-zoom-wrapper,
+.zoom-wrapper,
+.zoom-wrapper > div,
+.zoom-wrapper > div > div > img {
+  height: 100%;
+}
+
+.slideshow-container:focus {
+  outline: none;
+}

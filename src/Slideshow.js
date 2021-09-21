@@ -3,74 +3,74 @@ import { Zoom } from 'react-slideshow-image';
 
 import 'react-slideshow-image/dist/styles.css'
 
-import stations from './data/stations'
 
-const images = [
-  '/images/53+50.jpg',
-  '/images/52+95.jpg',
-  '/images/52+53.jpg',
-  '/images/52+00.jpg',
-  '/images/51+10.jpg',
-  '/images/50+65.jpg',
-  '/images/50+15.jpg',
-  '/images/49+65.jpg',
-  '/images/49+15.jpg',
-  '/images/48+65.jpg',
-  '/images/48+15.jpg',
-  '/images/47+65.jpg',
-  '/images/46+65.jpg',
-  '/images/46+15.jpg',
-  '/images/45+65.jpg',
-  '/images/45+15.jpg',
-  '/images/44+50.jpg',
-  '/images/44+12.jpg',
-  '/images/43+65.jpg',
-  '/images/43+15.jpg',
-  '/images/42+00.jpg',
-  '/images/41+50.jpg',
-  '/images/41+00.jpg',
-  '/images/40+50.jpg',
-  '/images/40+00.jpg',
-  '/images/39+50.jpg',
-  '/images/38+50.jpg',
-  '/images/37+50.jpg',
-  '/images/37+00.jpg',
-  '/images/36+65.jpg',
-  '/images/36+50.jpg',
-  '/images/36+15.jpg',
-  '/images/35+15.jpg',
-  '/images/34+65.jpg',
-  '/images/34+15.jpg',
-  '/images/33+50.jpg',
-  '/images/33+00.jpg',
-  '/images/32+50.jpg',
-  '/images/32+00.jpg',
-  '/images/31+50.jpg',
-  '/images/31+00.jpg',
-  '/images/29+80.jpg',
-  '/images/29+15.jpg',
-  '/images/28+65.jpg',
-  '/images/28+15.jpg',
-  '/images/27+65.jpg',
-  '/images/27+15.jpg',
-  '/images/26+65.jpg',
-  '/images/26+15.jpg',
-  '/images/25+65.jpg',
-  '/images/25+15.jpg',
-  '/images/24+65.jpg',
-  '/images/24+15.jpg',
-  '/images/23+65.jpg',
-  '/images/22+65.jpg',
-  '/images/22+15.jpg',
-  '/images/21+65.jpg',
-  '/images/20+65.jpg',
-  '/images/20+15.jpg',
-  '/images/19+65.jpg',
-  '/images/19+15.jpg',
-  '/images/18+65.jpg',
-  '/images/18+15.jpg',
-  '/images/17+15.jpg'
-]
+//
+// const images = [
+//   '/images/53+50.jpg',
+//   '/images/52+95.jpg',
+//   '/images/52+53.jpg',
+//   '/images/52+00.jpg',
+//   '/images/51+10.jpg',
+//   '/images/50+65.jpg',
+//   '/images/50+15.jpg',
+//   '/images/49+65.jpg',
+//   '/images/49+15.jpg',
+//   '/images/48+65.jpg',
+//   '/images/48+15.jpg',
+//   '/images/47+65.jpg',
+//   '/images/46+65.jpg',
+//   '/images/46+15.jpg',
+//   '/images/45+65.jpg',
+//   '/images/45+15.jpg',
+//   '/images/44+50.jpg',
+//   '/images/44+12.jpg',
+//   '/images/43+65.jpg',
+//   '/images/43+15.jpg',
+//   '/images/42+00.jpg',
+//   '/images/41+50.jpg',
+//   '/images/41+00.jpg',
+//   '/images/40+50.jpg',
+//   '/images/40+00.jpg',
+//   '/images/39+50.jpg',
+//   '/images/38+50.jpg',
+//   '/images/37+50.jpg',
+//   '/images/37+00.jpg',
+//   '/images/36+65.jpg',
+//   '/images/36+50.jpg',
+//   '/images/36+15.jpg',
+//   '/images/35+15.jpg',
+//   '/images/34+65.jpg',
+//   '/images/34+15.jpg',
+//   '/images/33+50.jpg',
+//   '/images/33+00.jpg',
+//   '/images/32+50.jpg',
+//   '/images/32+00.jpg',
+//   '/images/31+50.jpg',
+//   '/images/31+00.jpg',
+//   '/images/29+80.jpg',
+//   '/images/29+15.jpg',
+//   '/images/28+65.jpg',
+//   '/images/28+15.jpg',
+//   '/images/27+65.jpg',
+//   '/images/27+15.jpg',
+//   '/images/26+65.jpg',
+//   '/images/26+15.jpg',
+//   '/images/25+65.jpg',
+//   '/images/25+15.jpg',
+//   '/images/24+65.jpg',
+//   '/images/24+15.jpg',
+//   '/images/23+65.jpg',
+//   '/images/22+65.jpg',
+//   '/images/22+15.jpg',
+//   '/images/21+65.jpg',
+//   '/images/20+65.jpg',
+//   '/images/20+15.jpg',
+//   '/images/19+65.jpg',
+//   '/images/19+15.jpg',
+//   '/images/18+65.jpg',
+//   '/images/18+15.jpg',
+//   '/images/17+15.jpg'
+// ]
 
 // from example at https://github.com/femioladeji/react-slideshow/issues/59
 const lazyLoadImages = () => {
@@ -104,6 +104,7 @@ class Slideshow extends Component {
     this.back = this.back.bind(this);
     this.next = this.next.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
+    this.handleSlideChange = this.handleSlideChange.bind(this);
     this.state = {
       northBound: true
     }
@@ -146,7 +147,7 @@ class Slideshow extends Component {
   }
 
   handleSlideChange(oldIndex, newIndex) {
-    console.log(images[newIndex])
+    this.props.onIndexChange(newIndex)
   }
 
   render() {
@@ -155,7 +156,8 @@ class Slideshow extends Component {
       scale: this.state.northBound ? '1.6' : '0.8',
       autoplay: false,
       arrows: false,
-      onChange: this.handleSlideChange
+      onChange: this.handleSlideChange,
+      infinite: false
     }
 
     return (
@@ -167,7 +169,7 @@ class Slideshow extends Component {
         onKeyDown={ this.handleKeyDown }
       >
         <Zoom {...zoomInProperties} ref={this.slideRef}>
-          {stations.features.map((feature, index) => (
+          {this.props.stations.features.map((feature, index) => (
             <div key={index} style={{width: "100%"}}>
               <img
                 className='lazy'

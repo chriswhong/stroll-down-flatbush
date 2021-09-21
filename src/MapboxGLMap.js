@@ -17,7 +17,7 @@ const MapboxGLMap = ({ stations, currentIndex }) => {
         style: "mapbox://styles/mapbox/dark-v10", // stylesheet location
         center: [-73.970524, 40.674594],
         zoom: 14.5,
-        // interactive: false
+        interactive: false
       });
 
       map.on("load", () => {

@@ -113,11 +113,17 @@ class Slideshow extends Component {
   }
 
   back() {
-    this.slideRef.current.goBack();
+    this.setState({
+      northBound: false,
+      advance: true
+    })
   }
 
   next() {
-    this.slideRef.current.goNext();
+    this.setState({
+      northBound: true,
+      advance: true
+    })
   }
 
   componentDidMount() {
@@ -136,15 +142,9 @@ class Slideshow extends Component {
   handleKeyDown(e) {
     // arrow up/down button should select next/previous list element
     if (e.keyCode === 38) {
-      this.setState({
-        northBound: true,
-        advance: true
-      })
+      this.next()
     } else if (e.keyCode === 40) {
-      this.setState({
-        northBound: false,
-        advance: true
-      })
+      this.back()
     }
   }
 

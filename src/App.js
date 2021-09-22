@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTwitter } from '@fortawesome/free-brands-svg-icons'
+import { faTwitter, faGithub } from '@fortawesome/free-brands-svg-icons'
 
 import './App.css';
 import Slideshow from './Slideshow'
 import MapboxGLMap from './MapboxGLMap'
+import Modal from './Modal'
 
 import 'react-slideshow-image/dist/styles.css'
 
@@ -12,12 +13,14 @@ import stations from './data/stations'
 
 const App = () => {
   const [ currentIndex, setCurrentIndex ] = useState(0)
+  const [ showModal, setShowModal ] = useState(false)
 
   const handleIndexChange = (newIndex) => {
     setCurrentIndex(newIndex)
   }
 
   return (
+    <>
     <div className="App flex flex-col lg:flex-row">
       <div className="h-1/2 md:h-3/5 lg:h-full flex-grow min-w-0 relative">
         <Slideshow onIndexChange={handleIndexChange} stations={stations} />
@@ -33,7 +36,10 @@ const App = () => {
             <div className='text-xs'>Use the arrow buttons or your keyboard's arrow keys to navigate</div>
           </div>
           <div className='px-4 md:px-6 py-2 border-t lg:border-b border-white flex justify-between'>
-            <div className='font-bold text-xs cursor-pointer hover:text-gray-300 transition-all duration-100'>About</div>
+            <div className='font-bold text-xs cursor-pointer hover:text-gray-300 transition-all duration-100' onClick={() => { setShowModal(true) }}>About</div>
+            <a href="https://github.com/chriswhong/stroll-down-flatbush" target="_blank" rel='noreferrer'>
+              <div className='font-bold text-xs cursor-pointer hover:text-gray-300 transition-all duration-100' ><FontAwesomeIcon icon={faGithub} /></div>
+            </a>
             <a href="https://twitter.com/chris_whong" target="_blank" rel='noreferrer'>
               <div className='font-bold text-xs flex items-center cursor-pointer hover:text-gray-300 transition-all duration-100'><FontAwesomeIcon icon={faTwitter} className='mr-1'/> @chris_whong</div>
             </a>
@@ -44,6 +50,8 @@ const App = () => {
         </div>
       </div>
     </div>
+    <Modal show={showModal} setShow={setShowModal}/>
+    </>
   );
 }
 

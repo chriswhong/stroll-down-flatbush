@@ -1,16 +1,25 @@
 html,
 body,
 #root,
-.App,
-.react-slideshow-container,
-.react-slideshow-zoom-wrapper,
-.slideshow-container > div,
-.zoom-wrapper,
-.zoom-wrapper > div,
-.zoom-wrapper > div > div > img {
+.App {
   height: 100%;
 }
 
-.slideshow-container:focus {
+
+
+
+.react-slideshow-zoom-wrapper,
+.zoom-wrapper,
+.zoom-wrapper > div,
+.zoom-wrapper > div > div > div > img {
+  height: 100%;
+}
+
+.slideshow-component:focus {
   outline: none;
+}
+
+.slideshow-container > div,
+.react-slideshow-container {
+  height: 100%;
 }

@@ -18,7 +18,7 @@ const MapLibreMap = ({ stations, currentIndex }) => {
     const mapInstance = new MaplibreMap({
       container: mapContainer.current,
       style: "https://tiles.openfreemap.org/styles/dark",
-      center: [-73.970524, 40.674594],
+      center: currentStationFeature.geometry.coordinates,
       zoom: 14.5,
       interactive: false,
       attributionControl: { compact: true }

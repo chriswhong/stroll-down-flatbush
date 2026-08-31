@@ -66,7 +66,7 @@ const MapLibreMap = ({ stations, currentIndex }) => {
       map.setFilter('stations-highlighted-circle', ['==', 'marker', currentStationMarker]);
       map.flyTo({
         center: currentStationFeature.geometry.coordinates,
-        speed: 0.1
+        duration: 300
       })
     }
   }, [ currentStationMarker ]) // eslint-disable-line react-hooks/exhaustive-deps

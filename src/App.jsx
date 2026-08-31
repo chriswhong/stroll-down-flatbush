@@ -8,23 +8,35 @@ import { GithubIcon, BlueskyIcon } from './icons'
 
 import stations from './data/stations'
 
+const getIndexFromUrl = () => {
+  const marker = new URLSearchParams(window.location.search).get('photo')
+  if (!marker) return 0
+  const index = stations.features.findIndex((f) => f.properties.marker === marker)
+  return index >= 0 ? index : 0
+}
+
 const App = () => {
-  const [ currentIndex, setCurrentIndex ] = useState(0)
+  const [ initialIndex ] = useState(getIndexFromUrl)
+  const [ currentIndex, setCurrentIndex ] = useState(initialIndex)
   const [ showModal, setShowModal ] = useState(false)
 
   const handleIndexChange = (newIndex) => {
     setCurrentIndex(newIndex)
+    const marker = stations.features[newIndex].properties.marker
+    const url = new URL(window.location.href)
+    url.searchParams.set('photo', marker)
+    window.history.replaceState(null, '', url)
   }
 
   return (
     <>
     <div className="App flex flex-col lg:flex-row">
       <div className="h-1/2 md:h-3/5 lg:h-full flex-grow min-w-0 relative">
-        <Slideshow onIndexChange={handleIndexChange} stations={stations} />
+        <Slideshow onIndexChange={handleIndexChange} stations={stations} initialIndex={initialIndex} />
       </div>
       <div className="lg:w-80 bg-black flex-shrink-0 text-white border-l-0 border-t lg:border-l border-white flex flex-col-reverse md:flex-row lg:flex-col h-1/2 md:h-2/5 lg:h-auto">
-        <div className="flex-grow w-full md:w-2/3 lg:w-full  flex flex-col">
-          <div className="p-4 md:p-6 flex-grow">
+        <div className="flex-grow w-full md:w-2/3 lg:w-full  flex flex-col min-h-0">
+          <div className="p-4 md:p-6 flex-grow overflow-y-auto min-h-0">
             <div className="mb-2 lg:mb-6">
               <div className='font-bold text-base md:text-2xl lg:text-3xl'>A Stroll Down Flatbush Avenue</div>
               <div className='font-semibold text-xs md:text-sm italic'>circa 1914</div>

@@ -8,15 +8,16 @@ const PRELOAD_WINDOW = 2
 // swipe distance (px) required to trigger a navigation on touch devices
 const SWIPE_THRESHOLD = 50
 
-const Slideshow = ({ stations, onIndexChange }) => {
+const Slideshow = ({ stations, onIndexChange, initialIndex = 0 }) => {
   const features = stations.features
   const lastIndex = features.length - 1
 
-  const [currentIndex, setCurrentIndex] = useState(0)
+  const [currentIndex, setCurrentIndex] = useState(initialIndex)
   const [direction, setDirection] = useState('north')
 
   const containerRef = useRef(null)
   const touchStartY = useRef(null)
+  const scrubberTrackRef = useRef(null)
 
   useEffect(() => {
     containerRef.current?.focus()
@@ -26,17 +27,15 @@ const Slideshow = ({ stations, onIndexChange }) => {
     onIndexChange(currentIndex)
   }, [currentIndex]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  const next = () => {
-    if (currentIndex >= lastIndex) return
-    setDirection('north')
-    setCurrentIndex(currentIndex + 1)
+  const goTo = (index) => {
+    const clamped = Math.min(Math.max(index, 0), lastIndex)
+    if (clamped === currentIndex) return
+    setDirection(clamped > currentIndex ? 'north' : 'south')
+    setCurrentIndex(clamped)
   }
 
-  const back = () => {
-    if (currentIndex <= 0) return
-    setDirection('south')
-    setCurrentIndex(currentIndex - 1)
-  }
+  const next = () => goTo(currentIndex + 1)
+  const back = () => goTo(currentIndex - 1)
 
   const handleKeyDown = (e) => {
     if (e.key === 'ArrowUp') next()
@@ -56,6 +55,14 @@ const Slideshow = ({ stations, onIndexChange }) => {
     touchStartY.current = null
   }
 
+  const handleScrubberSeek = (e) => {
+    const track = scrubberTrackRef.current
+    if (!track) return
+    const rect = track.getBoundingClientRect()
+    const ratio = Math.min(Math.max((e.clientX - rect.left) / rect.width, 0), 1)
+    goTo(Math.round(ratio * lastIndex))
+  }
+
   // photos not currently active rest at a slight zoom offset depending on
   // the last direction of travel, so the active photo animates smoothly
   // into (north) or out of (south) that offset -- a subtle sense of motion
@@ -73,14 +80,14 @@ const Slideshow = ({ stations, onIndexChange }) => {
       onTouchEnd={handleTouchEnd}
     >
       <div
-        className="absolute left-0 top-0 text-white p-2 md:p-4 m-4 md:m-10 flex flex-col z-20 bg-black rounded-full bg-opacity-90 shadow-md"
+        className="absolute left-0 top-0 text-white p-1 md:p-2 m-4 md:m-10 flex flex-col z-20 bg-black rounded-full bg-opacity-90 shadow-md"
         style={{ boxShadow: '0px 0px 10px -3px #EAEAEA' }}
       >
         <button
           type='button'
           aria-label='Next photo'
           disabled={currentIndex >= lastIndex}
-          className="cursor-pointer hover:text-gray-300 disabled:opacity-30 disabled:cursor-default transition-all duration-100 mb-2"
+          className="cursor-pointer hover:text-gray-300 disabled:opacity-30 disabled:cursor-default transition-all duration-100 p-2.5"
           onClick={next}
         >
           <ArrowUpIcon className='w-6 h-6 md:w-7 md:h-7' />
@@ -89,26 +96,27 @@ const Slideshow = ({ stations, onIndexChange }) => {
           type='button'
           aria-label='Previous photo'
           disabled={currentIndex <= 0}
-          className="cursor-pointer hover:text-gray-300 disabled:opacity-30 disabled:cursor-default transition-all duration-100"
+          className="cursor-pointer hover:text-gray-300 disabled:opacity-30 disabled:cursor-default transition-all duration-100 p-2.5"
           onClick={back}
         >
           <ArrowDownIcon className='w-6 h-6 md:w-7 md:h-7' />
         </button>
       </div>
 
-      <div className="absolute right-0 bottom-0 text-white text-xs m-3 md:m-4 px-2 py-1 z-20 bg-black bg-opacity-60 rounded">
+      <div className="absolute right-0 bottom-2 md:bottom-3 text-white text-xs m-3 md:m-4 px-2 py-1 z-20 bg-black bg-opacity-60 rounded">
         Photo {currentIndex + 1} of {features.length}
       </div>
 
       {features.map((feature, index) => {
-        const isActive = index === currentIndex
-        const withinPreloadWindow = Math.abs(index - currentIndex) <= PRELOAD_WINDOW
+        const distance = Math.abs(index - currentIndex)
+        const isActive = distance === 0
+        const withinPreloadWindow = distance <= PRELOAD_WINDOW
         const marker = feature.properties.marker
 
         return (
           <div
             key={marker}
-            className={`absolute inset-0 flex flex-col transition-[opacity,transform] duration-500 ease-out ${
+            className={`absolute inset-0 flex flex-col pb-2 transition-[opacity,transform] duration-500 ease-out ${
               isActive ? 'opacity-100 scale-100 z-10' : `opacity-0 ${restScale} z-0`
             }`}
           >
@@ -116,7 +124,8 @@ const Slideshow = ({ stations, onIndexChange }) => {
               {withinPreloadWindow && (
                 <img
                   className='max-w-full max-h-full object-contain'
-                  loading={isActive ? 'eager' : 'lazy'}
+                  loading='eager'
+                  fetchPriority={distance <= 1 ? 'high' : 'low'}
                   src={`/images/${marker}.jpg`}
                   alt={`Flatbush Avenue circa 1914, near survey marker ${marker}`}
                 />
@@ -130,6 +139,24 @@ const Slideshow = ({ stations, onIndexChange }) => {
           </div>
         )
       })}
+
+      <div
+        ref={scrubberTrackRef}
+        onClick={handleScrubberSeek}
+        role='slider'
+        aria-label='Photo position'
+        aria-valuemin={0}
+        aria-valuemax={lastIndex}
+        aria-valuenow={currentIndex}
+        className='absolute left-0 right-0 bottom-0 h-3 z-30 flex items-end cursor-pointer group'
+      >
+        <div className='w-full h-1 group-hover:h-1.5 bg-white/15 transition-[height] duration-150'>
+          <div
+            className='h-full bg-white/80 transition-[width] duration-300 ease-out'
+            style={{ width: `${(currentIndex / lastIndex) * 100}%` }}
+          />
+        </div>
+      </div>
     </div>
   )
 }

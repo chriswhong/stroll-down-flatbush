@@ -1,6 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Map as MaplibreMap } from "maplibre-gl";
+import { Map as MaplibreMap, setWorkerUrl } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
+
+// MapLibre resolves its worker script relative to its own module URL at
+// runtime, which breaks once bundled into the app's own JS file. Point it at
+// a verbatim copy instead (see scripts/copy-maplibre-worker.mjs).
+setWorkerUrl('/vendor/maplibre-gl-worker.mjs');
 
 const MapLibreMap = ({ stations, currentIndex }) => {
   const [map, setMap] = useState(null);

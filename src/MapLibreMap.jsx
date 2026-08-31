@@ -20,7 +20,8 @@ const MapLibreMap = ({ stations, currentIndex }) => {
       style: "https://tiles.openfreemap.org/styles/dark",
       center: [-73.970524, 40.674594],
       zoom: 14.5,
-      interactive: false
+      interactive: false,
+      attributionControl: { compact: true }
     });
     mapRef.current = mapInstance;
 

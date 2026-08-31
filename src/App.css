@@ -5,21 +5,6 @@ body,
   height: 100%;
 }
 
-
-
-
-.react-slideshow-zoom-wrapper,
-.zoom-wrapper,
-.zoom-wrapper > div,
-.zoom-wrapper > div > div > div > img {
-  height: 100%;
-}
-
 .slideshow-component:focus {
   outline: none;
-}
-
-.slideshow-container > div,
-.react-slideshow-container {
-  height: 100%;
 }

@@ -1,13 +1,10 @@
 import React, { useState } from 'react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTwitter, faGithub } from '@fortawesome/free-brands-svg-icons'
 
 import './App.css';
 import Slideshow from './Slideshow'
-import MapboxGLMap from './MapboxGLMap'
+import MapLibreMap from './MapLibreMap'
 import Modal from './Modal'
-
-import 'react-slideshow-image/dist/styles.css'
+import { GithubIcon, BlueskyIcon } from './icons'
 
 import stations from './data/stations'
 
@@ -38,15 +35,15 @@ const App = () => {
           <div className='px-4 md:px-6 py-2 border-t lg:border-b border-white flex justify-between'>
             <div className='font-bold text-xs cursor-pointer hover:text-gray-300 transition-all duration-100' onClick={() => { setShowModal(true) }}>About</div>
             <a href="https://github.com/chriswhong/stroll-down-flatbush" target="_blank" rel='noreferrer'>
-              <div className='font-bold text-xs cursor-pointer hover:text-gray-300 transition-all duration-100' ><FontAwesomeIcon icon={faGithub} /></div>
+              <div className='font-bold text-xs cursor-pointer hover:text-gray-300 transition-all duration-100' ><GithubIcon className='w-4 h-4' /></div>
             </a>
-            <a href="https://twitter.com/chris_whong" target="_blank" rel='noreferrer'>
-              <div className='font-bold text-xs flex items-center cursor-pointer hover:text-gray-300 transition-all duration-100'><FontAwesomeIcon icon={faTwitter} className='mr-1'/> @chris_whong</div>
+            <a href="https://bsky.app/profile/chriswhong.bsky.social" target="_blank" rel='noreferrer'>
+              <div className='font-bold text-xs flex items-center cursor-pointer hover:text-gray-300 transition-all duration-100'><BlueskyIcon className='w-3.5 h-3.5 mr-1' /> @chriswhong.bsky.social</div>
             </a>
           </div>
         </div>
         <div className='bg-gray-400 h-1/3 md:h-full lg:h-56 w-full md:w-1/3 lg:w-auto'>
-          <MapboxGLMap currentIndex={currentIndex} stations={stations} />
+          <MapLibreMap currentIndex={currentIndex} stations={stations} />
         </div>
       </div>
     </div>
